@@ -39,10 +39,11 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-      - /mnt/temp/owncloud/data:/var/www/html
-      - /mnt/temp/owncloud/apps:/var/www/html/apps #installed / modified apps
-      - /mnt/temp/owncloud/config:/var/www/html/config #local configuration
-      - /mnt/temp/data:/var/www/html/data #the actual data of your ownCloud
+       - /mnt/owncloud/data:/mnt/data
+#      - /mnt/temp/owncloud/data:/var/www/html
+#      - /mnt/temp/owncloud/apps:/var/www/html/apps #installed / modified apps
+#      - /mnt/temp/owncloud/config:/var/www/html/config #local configuration
+#      - /mnt/temp/data:/var/www/html/data #the actual data of your ownCloud
 
   mariadb:
     image: mariadb:10.5
@@ -62,7 +63,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - /mnt/temp/owncloud/mysql:/var/lib/mysql
+      - /mnt/owncloud/mysql:/var/lib/mysql
 
   redis:
     image: redis:6
@@ -78,6 +79,6 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - /mnt/temp/owncloud/redis:/data
+      - /mnt/owncloud/redis:/data
 
 #pull_policy: build
