@@ -1,0 +1,83 @@
+version: "3"
+
+#volumes:
+#  files:
+#    driver: local
+#  mysql:
+#   driver: local
+#  redis:
+#    driver: local
+
+services:
+  owncloud:
+    image: owncloud/server:10.12.0-rc2
+    container_name: owncloud_server
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - mariadb
+      - redis
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - OWNCLOUD_DOMAIN=10.10.10.11:8080
+      - OWNCLOUD_TRUSTED_DOMAINS=10.10.10.11
+      - OWNCLOUD_DB_TYPE=mysql
+      - OWNCLOUD_DB_NAME=$db_name
+      - OWNCLOUD_DB_USERNAME=$db_name
+      - OWNCLOUD_DB_PASSWORD=$db_name
+      - OWNCLOUD_DB_HOST=mariadb
+      - OWNCLOUD_ADMIN_USERNAME=$db_user
+      - OWNCLOUD_ADMIN_PASSWORD=$admin_pass
+      - OWNCLOUD_MYSQL_UTF8MB4=true
+      - OWNCLOUD_REDIS_ENABLED=true
+      - OWNCLOUD_REDIS_HOST=redis
+    healthcheck:
+      test: ["CMD", "/usr/bin/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - /mnt/temp/owncloud/data:/var/www/html
+      - /mnt/temp/owncloud/apps:/var/www/html/apps #installed / modified apps
+      - /mnt/temp/owncloud/config:/var/www/html/config #local configuration
+      - /mnt/temp/data:/var/www/html/data #the actual data of your ownCloud
+
+  mariadb:
+    image: mariadb:10.5
+    container_name: owncloud_mariadb
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD=$db_pass
+      - MYSQL_USER=$db_user
+      - MYSQL_PASSWORD=$db_pass
+      - MYSQL_DATABASE=$db_name
+    command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=$db_pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - /mnt/temp/owncloud/mysql:/var/lib/mysql
+
+  redis:
+    image: redis:6
+    container_name: owncloud_redis
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+    command: ["--databases", "1"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - /mnt/temp/owncloud/redis:/data
+
+pull_policy: build
