@@ -83,5 +83,3 @@ services:
     volumes:
 #      - /mnt/owncloud/redis:/data
        - ${app_data}/owncloud_redis:/data
-
-#pull_policy: build
