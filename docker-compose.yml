@@ -39,7 +39,8 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-       - /mnt/owncloud/data:/mnt/data
+       - /mnt/nas/data/owncloud:/mnt/data
+#      - /mnt/owncloud/data:/mnt/data
 #      - /mnt/temp/owncloud/data:/var/www/html
 #      - /mnt/temp/owncloud/apps:/var/www/html/apps #installed / modified apps
 #      - /mnt/temp/owncloud/config:/var/www/html/config #local configuration
@@ -63,7 +64,8 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - /mnt/owncloud/mysql:/var/lib/mysql
+      - ${app_data}/owncloud_mysql:/var/lib/mysql
+#     - /mnt/owncloud/mysql:/var/lib/mysql
 
   redis:
     image: redis:6
