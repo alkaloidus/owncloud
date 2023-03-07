@@ -79,6 +79,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - /mnt/owncloud/redis:/data
+#      - /mnt/owncloud/redis:/data
+       - ${app_data}/owncloud_redis:/data
 
 #pull_policy: build
