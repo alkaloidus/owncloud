@@ -1,13 +1,5 @@
 version: "3"
 
-#volumes:
-#  files:
-#    driver: local
-#  mysql:
-#   driver: local
-#  redis:
-#    driver: local
-
 services:
   owncloud:
     image: owncloud/server:10.12.0-rc2
@@ -65,7 +57,6 @@ services:
       retries: 5
     volumes:
       - ${app_data}/owncloud_mysql:/var/lib/mysql
-#     - /mnt/owncloud/mysql:/var/lib/mysql
 
   redis:
     image: redis:6
@@ -81,5 +72,4 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-#      - /mnt/owncloud/redis:/data
        - ${app_data}/owncloud_redis:/data
