@@ -7,7 +7,7 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - mariadb
+      - postgres
       - redis
     environment:
 #      - PUID=$puid
@@ -32,25 +32,69 @@ services:
     volumes:
        - ${app_data}/owncloud:/mnt/data
 
-  mariadb:
-    image: mariadb:10.5
-    container_name: owncloud_mariadb
+#   mariadb:
+#     image: mariadb:10.5
+#     container_name: owncloud_mariadb
+#     restart: always
+#     environment:
+# #      - PUID=$puid
+# #      - PGID=$guid
+#       - MYSQL_ROOT_PASSWORD=$db_pass
+#       - MYSQL_USER=$db_user
+#       - MYSQL_PASSWORD=$db_pass
+#       - MYSQL_DATABASE=$db_name
+#     command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
+#     healthcheck:
+#       test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=$db_pass"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+#     volumes:
+#       - ${app_data}/owncloud_mysql:/var/lib/mysql
+
+postgres:
+    image: postgres:15-alpine
+    container_name: owncloud_postgres
     restart: always
     environment:
-#      - PUID=$puid
-#      - PGID=$guid
-      - MYSQL_ROOT_PASSWORD=$db_pass
-      - MYSQL_USER=$db_user
-      - MYSQL_PASSWORD=$db_pass
-      - MYSQL_DATABASE=$db_name
-    command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
+      - POSTGRES_DB=$db_name
+      - POSTGRES_USER=$db_user
+      - POSTGRES_PASSWORD=$db_pass
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    command: 
+      - "postgres"
+      - "-c"
+      - "max_connections=200"
+      - "-c"
+      - "shared_buffers=256MB"
+      - "-c"
+      - "effective_cache_size=1GB"
+      - "-c"
+      - "maintenance_work_mem=64MB"
+      - "-c"
+      - "checkpoint_completion_target=0.9"
+      - "-c"
+      - "wal_buffers=16MB"
+      - "-c"
+      - "default_statistics_target=100"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "effective_io_concurrency=200"
+      - "-c"
+      - "work_mem=1MB"
+      - "-c"
+      - "min_wal_size=1GB"
+      - "-c"
+      - "max_wal_size=4GB"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=$db_pass"]
+      test: ["CMD-SHELL", "pg_isready -U $db_user -d $db_name"]
       interval: 10s
       timeout: 5s
       retries: 5
     volumes:
-      - ${app_data}/owncloud_mysql:/var/lib/mysql
+      - ${app_data}/owncloud_postgres:/var/lib/postgresql/data
+    shm_size: 256mb
 
   redis:
     image: redis:6
@@ -67,3 +111,4 @@ services:
       retries: 5
     volumes:
        - ${app_data}/owncloud_redis:/data
+
