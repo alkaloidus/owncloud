@@ -7,18 +7,16 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - postgres
+      - mariadb
       - redis
     environment:
-#      - PUID=$puid
-#      - PGID=$guid
       - OWNCLOUD_DOMAIN=$domain
       - OWNCLOUD_TRUSTED_DOMAINS=$trust_domain
-      - OWNCLOUD_DB_TYPE=pgsql
+      - OWNCLOUD_DB_TYPE=mysql
       - OWNCLOUD_DB_NAME=$db_name
       - OWNCLOUD_DB_USERNAME=$db_user
       - OWNCLOUD_DB_PASSWORD=$db_pass
-      - OWNCLOUD_DB_HOST=postgres
+      - OWNCLOUD_DB_HOST=mariadb
       - OWNCLOUD_ADMIN_USERNAME=$admin_name
       - OWNCLOUD_ADMIN_PASSWORD=$admin_pass
       - OWNCLOUD_MYSQL_UTF8MB4=true
@@ -30,81 +28,31 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-       - ${app_data}/owncloud:/mnt/data
+      - files:/mnt/data
 
-#   mariadb:
-#     image: mariadb:10.5
-#     container_name: owncloud_mariadb
-#     restart: always
-#     environment:
-# #      - PUID=$puid
-# #      - PGID=$guid
-#       - MYSQL_ROOT_PASSWORD=$db_pass
-#       - MYSQL_USER=$db_user
-#       - MYSQL_PASSWORD=$db_pass
-#       - MYSQL_DATABASE=$db_name
-#     command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
-#     healthcheck:
-#       test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=$db_pass"]
-#       interval: 10s
-#       timeout: 5s
-#       retries: 5
-#     volumes:
-#       - ${app_data}/owncloud_mysql:/var/lib/mysql
-
-  postgres:
-    image: postgres:15-alpine
-    container_name: owncloud_postgres
+  mariadb:
+    image: mariadb:10.11
+    container_name: owncloud_mariadb
     restart: always
     environment:
-      - POSTGRES_DB=$db_name
-      - POSTGRES_USER=$db_user
-      - POSTGRES_PASSWORD=$db_pass
-      # - PGDATA=/var/lib/postgresql/data/pgdata
-      # - PUID=$puid
-      # - PGID=$guid
-    command:
-      - "postgres"
-      - "-c"
-      - "max_connections=200"
-      - "-c"
-      - "shared_buffers=256MB"
-      - "-c"
-      - "effective_cache_size=1GB"
-      - "-c"
-      - "maintenance_work_mem=64MB"
-      - "-c"
-      - "checkpoint_completion_target=0.9"
-      - "-c"
-      - "wal_buffers=16MB"
-      - "-c"
-      - "default_statistics_target=100"
-      - "-c"
-      - "random_page_cost=1.1"
-      - "-c"
-      - "effective_io_concurrency=200"
-      - "-c"
-      - "work_mem=1MB"
-      - "-c"
-      - "min_wal_size=1GB"
-      - "-c"
-      - "max_wal_size=4GB"
+      - MYSQL_ROOT_PASSWORD=$db_pass
+      - MYSQL_USER=$db_user
+      - MYSQL_PASSWORD=$db_pass
+      - MYSQL_DATABASE=$db_name
+      - MARIADB_AUTO_UPGRADE=1
+    command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $db_user -d $db_name"]
+      test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=$db_pass"]
       interval: 10s
       timeout: 5s
       retries: 5
     volumes:
-      - owncloud_db:/var/lib/postgresql/data
-    shm_size: 256mb
+      - mysql:/var/lib/mysql
 
   redis:
     image: redis:6
     container_name: owncloud_redis
     restart: always
-#    environment:
-#      - PUID=$puid
-#      - PGID=$guid
     command: ["--databases", "1"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -112,13 +60,12 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-       - ${app_data}/owncloud_redis:/data
+       - redis:/data
 
 volumes:
-  owncloud_db:
+  files:
     driver: local
-
-
-
-
-
+  mysql:
+    driver: local
+  redis:
+    driver: local
