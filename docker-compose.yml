@@ -23,6 +23,19 @@ services:
       - OWNCLOUD_MYSQL_UTF8MB4=true
       - OWNCLOUD_REDIS_ENABLED=true
       - OWNCLOUD_REDIS_HOST=redis
+      # S3 ObjectStore Configuration
+      - OWNCLOUD_OBJECTSTORE_ENABLED=true
+      - OWNCLOUD_OBJECTSTORE_CLASS=OCA\Files_Primary_S3\S3Storage
+      - OWNCLOUD_OBJECTSTORE_BUCKET=owncloud
+      - OWNCLOUD_OBJECTSTORE_AUTOCREATE=true
+      - OWNCLOUD_OBJECTSTORE_VERSION=2006-03-01
+      #- OWNCLOUD_OBJECTSTORE_REGION=eu-central-1
+      - OWNCLOUD_OBJECTSTORE_KEY=$s3_key
+      - OWNCLOUD_OBJECTSTORE_SECRET=$s3_secret
+      - OWNCLOUD_OBJECTSTORE_ENDPOINT=$s3_endpoint  # adjust if using MinIO or other S3-compatible
+      # Optional S3 settings
+      - OWNCLOUD_OBJECTSTORE_PATHSTYLE=false  # set to true for MinIO
+      # - OWNCLOUD_OBJECTSTORE_SSE_C_KEY=your-encryption-key  # if using SSE-C
     healthcheck:
       test: ["CMD", "/usr/bin/healthcheck"]
       interval: 30s
@@ -71,5 +84,6 @@ services:
       retries: 5
     volumes:
        - ${app_data}/owncloud_redis:/data
+
 
 
