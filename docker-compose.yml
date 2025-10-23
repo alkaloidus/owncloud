@@ -10,16 +10,16 @@ services:
       - mariadb
       - redis
     environment:
-      - PUID=$puid
-      - PGID=$guid
+#      - PUID=$puid
+#      - PGID=$guid
       - OWNCLOUD_DOMAIN=$domain
       - OWNCLOUD_TRUSTED_DOMAINS=$trust_domain
       - OWNCLOUD_DB_TYPE=mysql
       - OWNCLOUD_DB_NAME=$db_name
-      - OWNCLOUD_DB_USERNAME=$db_name
-      - OWNCLOUD_DB_PASSWORD=$db_name
+      - OWNCLOUD_DB_USERNAME=$db_user
+      - OWNCLOUD_DB_PASSWORD=$db_pass
       - OWNCLOUD_DB_HOST=mariadb
-      - OWNCLOUD_ADMIN_USERNAME=$db_user
+      - OWNCLOUD_ADMIN_USERNAME=$admin_name
       - OWNCLOUD_ADMIN_PASSWORD=$admin_pass
       - OWNCLOUD_MYSQL_UTF8MB4=true
       - OWNCLOUD_REDIS_ENABLED=true
@@ -37,8 +37,8 @@ services:
     container_name: owncloud_mariadb
     restart: always
     environment:
-      - PUID=$puid
-      - PGID=$guid
+#      - PUID=$puid
+#      - PGID=$guid
       - MYSQL_ROOT_PASSWORD=$db_pass
       - MYSQL_USER=$db_user
       - MYSQL_PASSWORD=$db_pass
@@ -56,9 +56,9 @@ services:
     image: redis:6
     container_name: owncloud_redis
     restart: always
-    environment:
-      - PUID=$puid
-      - PGID=$guid
+#    environment:
+#      - PUID=$puid
+#      - PGID=$guid
     command: ["--databases", "1"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -67,8 +67,3 @@ services:
       retries: 5
     volumes:
        - ${app_data}/owncloud_redis:/data
-
-
-
-
-
