@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   owncloud:
     image: owncloud/server:10.16.0
@@ -31,7 +29,7 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-       - /mnt/nas/data/owncloud:/mnt/data
+       - ${app_data}/owncloud:/mnt/data
 #      - /mnt/owncloud/data:/mnt/data
 #      - /mnt/temp/owncloud/data:/var/www/html
 #      - /mnt/temp/owncloud/apps:/var/www/html/apps #installed / modified apps
@@ -73,4 +71,5 @@ services:
       retries: 5
     volumes:
        - ${app_data}/owncloud_redis:/data
+
 
