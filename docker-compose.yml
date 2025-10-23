@@ -95,7 +95,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - ${app_data}/owncloud_postgres:/var/lib/postgresql/data
+      - owncloud_db:/var/lib/postgresql/data
     shm_size: 256mb
 
   redis:
@@ -114,6 +114,9 @@ services:
     volumes:
        - ${app_data}/owncloud_redis:/data
 
+volumes:
+  owncloud_db:
+    driver: local
 
 
 
