@@ -52,7 +52,7 @@ services:
 #     volumes:
 #       - ${app_data}/owncloud_mysql:/var/lib/mysql
 
-postgres:
+  postgres:
     image: postgres:15-alpine
     container_name: owncloud_postgres
     restart: always
@@ -111,5 +111,6 @@ postgres:
       retries: 5
     volumes:
        - ${app_data}/owncloud_redis:/data
+
 
 
