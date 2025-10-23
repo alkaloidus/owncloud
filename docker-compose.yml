@@ -1,4 +1,5 @@
 services:
+
   owncloud:
     image: owncloud/server:10.16.0
     container_name: owncloud_server
@@ -9,10 +10,10 @@ services:
       - mariadb
       - redis
     environment:
-      - PUID=1000
-      - PGID=1000
-      - OWNCLOUD_DOMAIN=10.10.10.11:8080
-      - OWNCLOUD_TRUSTED_DOMAINS=10.10.10.11
+      - PUID=$puid
+      - PGID=$guid
+      - OWNCLOUD_DOMAIN=$domain
+      - OWNCLOUD_TRUSTED_DOMAINS=$trust_domain
       - OWNCLOUD_DB_TYPE=mysql
       - OWNCLOUD_DB_NAME=$db_name
       - OWNCLOUD_DB_USERNAME=$db_name
@@ -23,19 +24,6 @@ services:
       - OWNCLOUD_MYSQL_UTF8MB4=true
       - OWNCLOUD_REDIS_ENABLED=true
       - OWNCLOUD_REDIS_HOST=redis
-      # S3 ObjectStore Configuration
-      # - OWNCLOUD_OBJECTSTORE_ENABLED=true
-      # - OWNCLOUD_OBJECTSTORE_CLASS=OCA\Files_Primary_S3\S3Storage
-      # - OWNCLOUD_OBJECTSTORE_BUCKET=owncloud
-      # - OWNCLOUD_OBJECTSTORE_AUTOCREATE=true
-      # - OWNCLOUD_OBJECTSTORE_VERSION=2006-03-01
-      #- OWNCLOUD_OBJECTSTORE_REGION=eu-central-1
-      # - OWNCLOUD_OBJECTSTORE_KEY=$s3_key
-      # - OWNCLOUD_OBJECTSTORE_SECRET=$s3_secret
-      # - OWNCLOUD_OBJECTSTORE_ENDPOINT=$s3_endpoint  # adjust if using MinIO or other S3-compatible
-      # # Optional S3 settings
-      # - OWNCLOUD_OBJECTSTORE_PATHSTYLE=false  # set to true for MinIO
-      # # - OWNCLOUD_OBJECTSTORE_SSE_C_KEY=your-encryption-key  # if using SSE-C
     healthcheck:
       test: ["CMD", "/usr/bin/healthcheck"]
       interval: 30s
@@ -43,19 +31,14 @@ services:
       retries: 5
     volumes:
        - ${app_data}/owncloud:/mnt/data
-#      - /mnt/owncloud/data:/mnt/data
-#      - /mnt/temp/owncloud/data:/var/www/html
-#      - /mnt/temp/owncloud/apps:/var/www/html/apps #installed / modified apps
-#      - /mnt/temp/owncloud/config:/var/www/html/config #local configuration
-#      - /mnt/temp/data:/var/www/html/data #the actual data of your ownCloud
 
   mariadb:
     image: mariadb:10.5
     container_name: owncloud_mariadb
     restart: always
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=$puid
+      - PGID=$guid
       - MYSQL_ROOT_PASSWORD=$db_pass
       - MYSQL_USER=$db_user
       - MYSQL_PASSWORD=$db_pass
@@ -74,8 +57,8 @@ services:
     container_name: owncloud_redis
     restart: always
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=$puid
+      - PGID=$guid
     command: ["--databases", "1"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -84,6 +67,7 @@ services:
       retries: 5
     volumes:
        - ${app_data}/owncloud_redis:/data
+
 
 
 
