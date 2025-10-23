@@ -60,9 +60,9 @@ services:
       - POSTGRES_DB=$db_name
       - POSTGRES_USER=$db_user
       - POSTGRES_PASSWORD=$db_pass
-      - PGDATA=/var/lib/postgresql/data/pgdata
-      - PUID=$puid
-      - PGID=$guid
+      # - PGDATA=/var/lib/postgresql/data/pgdata
+      # - PUID=$puid
+      # - PGID=$guid
     command:
       - "postgres"
       - "-c"
@@ -117,6 +117,7 @@ services:
 volumes:
   owncloud_db:
     driver: local
+
 
 
 
