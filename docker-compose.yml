@@ -14,11 +14,11 @@ services:
 #      - PGID=$guid
       - OWNCLOUD_DOMAIN=$domain
       - OWNCLOUD_TRUSTED_DOMAINS=$trust_domain
-      - OWNCLOUD_DB_TYPE=mysql
+      - OWNCLOUD_DB_TYPE=pgsql
       - OWNCLOUD_DB_NAME=$db_name
       - OWNCLOUD_DB_USERNAME=$db_user
       - OWNCLOUD_DB_PASSWORD=$db_pass
-      - OWNCLOUD_DB_HOST=mariadb
+      - OWNCLOUD_DB_HOST=postgres
       - OWNCLOUD_ADMIN_USERNAME=$admin_name
       - OWNCLOUD_ADMIN_PASSWORD=$admin_pass
       - OWNCLOUD_MYSQL_UTF8MB4=true
@@ -117,6 +117,7 @@ services:
 volumes:
   owncloud_db:
     driver: local
+
 
 
 
