@@ -61,6 +61,8 @@ services:
       - POSTGRES_USER=$db_user
       - POSTGRES_PASSWORD=$db_pass
       - PGDATA=/var/lib/postgresql/data/pgdata
+      - PUID=$puid
+      - PGID=$guid
     command:
       - "postgres"
       - "-c"
@@ -111,6 +113,7 @@ services:
       retries: 5
     volumes:
        - ${app_data}/owncloud_redis:/data
+
 
 
 
