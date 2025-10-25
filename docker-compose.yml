@@ -22,6 +22,19 @@ services:
       - OWNCLOUD_MYSQL_UTF8MB4=true
       - OWNCLOUD_REDIS_ENABLED=true
       - OWNCLOUD_REDIS_HOST=redis
+      # S3 Object Storage Configuration
+      - OWNCLOUD_OBJECTSTORE_ENABLED=true
+      - OWNCLOUD_OBJECTSTORE_CLASS=OCA\Files_Primary_S3\S3Storage
+      - OWNCLOUD_OBJECTSTORE_BUCKET=$bucket
+      - OWNCLOUD_OBJECTSTORE_ENDPOINT=$s3_endpoint
+      - OWNCLOUD_OBJECTSTORE_KEY=$s3_access
+      - OWNCLOUD_OBJECTSTORE_SECRET=$s3_secret
+      # - OWNCLOUD_OBJECTSTORE_REGION=us-east-1  # Regru typically uses this
+      - OWNCLOUD_OBJECTSTORE_PATHSTYLE=true
+      # - OWNCLOUD_OBJECTSTORE_VERSION=2006-03-01
+      # - OWNCLOUD_OBJECTSTORE_PART_SIZE=5242880
+      # - OWNCLOUD_OBJECTSTORE_CONCURRENCY=3
+      # - OWNCLOUD_OBJECTSTORE_AVAILABLE_STORAGE=
     healthcheck:
       test: ["CMD", "/usr/bin/healthcheck"]
       interval: 30s
@@ -69,3 +82,4 @@ volumes:
     driver: local
   redis:
     driver: local
+
