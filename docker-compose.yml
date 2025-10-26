@@ -2,7 +2,7 @@ services:
 
   owncloud:
     image: owncloud/server:10.16.0
-    container_name: owncloud_server
+    container_name: owncloud
     restart: always
     ports:
       - 80:8080
@@ -45,7 +45,7 @@ services:
 
   mariadb:
     image: mariadb:10.11
-    container_name: owncloud_mariadb
+    container_name: owncloud_db
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=$db_pass
@@ -82,6 +82,7 @@ volumes:
     driver: local
   redis:
     driver: local
+
 
 
 
