@@ -42,6 +42,8 @@ services:
       retries: 5
     volumes:
       - files:/mnt/data
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 
   mariadb:
     image: mariadb:10.11
@@ -61,6 +63,8 @@ services:
       retries: 5
     volumes:
       - mysql:/var/lib/mysql
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 
   redis:
     image: redis:6
@@ -74,6 +78,9 @@ services:
       retries: 5
     volumes:
        - redis:/data
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+    
 
 volumes:
   files:
@@ -82,6 +89,7 @@ volumes:
     driver: local
   redis:
     driver: local
+
 
 
 
